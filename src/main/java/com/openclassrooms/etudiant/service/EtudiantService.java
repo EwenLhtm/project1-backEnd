@@ -20,6 +20,9 @@ public class EtudiantService {
 
     public void create(Etudiant etudiant) {
         Assert.notNull(etudiant, "Etudiant must not be null");
+        Assert.hasText(etudiant.getFirstName(), "First name must not be null or empty");
+        Assert.hasText(etudiant.getLastName(), "Last name must not be null or empty");
+        Assert.hasText(etudiant.getEmail(), "Email must not be null or empty");
 
         Optional<Etudiant> optionalEtudiant = etudiantRepository.findByEmail(etudiant.getEmail());
         if(optionalEtudiant.isPresent()) {
@@ -39,6 +42,10 @@ public class EtudiantService {
 
     public void update(Long id,Etudiant etudiant) {
         Assert.notNull(etudiant, "Etudiant must not be null");
+        Assert.notNull(id, "Id must not be null");
+        Assert.hasText(etudiant.getFirstName(), "First name must not be null or empty");
+        Assert.hasText(etudiant.getLastName(), "Last name must not be null or empty");
+        Assert.hasText(etudiant.getEmail(), "Email must not be null or empty");
         etudiant.setId(id);
         Optional<Etudiant> optionalEtudiant = etudiantRepository.findById(etudiant.getId());
         if(optionalEtudiant.isPresent()) {
