@@ -63,10 +63,10 @@ public class UserControllerTest {
 
     @Test
     public void registerUserWithoutRequiredData() throws Exception {
-        // GIVEN
+        // Creation d'un objet RegisterDTO vide pour simuler l'absence de données requises
         RegisterDTO registerDTO = new RegisterDTO();
 
-        // WHEN
+        // Envoi de la requête POST pour l'enregistrement de l'utilisateur avec des données manquantes
         mockMvc.perform(MockMvcRequestBuilders.post(URL)
                         .content(objectMapper.writeValueAsString(registerDTO))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -77,7 +77,7 @@ public class UserControllerTest {
 
     @Test
     public void registerAlreadyExistUser() throws Exception {
-        // GIVEN
+        // Creation d'un utilisateur existant dans la base de données
         User user = new User();
         user.setFirstName(FIRST_NAME);
         user.setLastName(LAST_NAME);
@@ -85,13 +85,14 @@ public class UserControllerTest {
         user.setPassword(PASSWORD);
         userService.register(user);
 
+        // Creation d'un objet RegisterDTO avec les mêmes informations pour simuler l'enregistrement d'un utilisateur déjà existant
         RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setFirstName(FIRST_NAME);
         registerDTO.setLastName(LAST_NAME);
         registerDTO.setLogin(LOGIN);
         registerDTO.setPassword(PASSWORD);
 
-        // WHEN
+        // Envoi de la requête POST pour l'enregistrement de l'utilisateur déjà existant
         mockMvc.perform(MockMvcRequestBuilders.post(URL)
                         .content(objectMapper.writeValueAsString(registerDTO))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -102,14 +103,14 @@ public class UserControllerTest {
 
     @Test
     public void registerUserSuccessful() throws Exception {
-        // GIVEN
+        // Creation d'un objet RegisterDTO avec les informations nécessaires pour l'enregistrement d'un nouvel utilisateur
         RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setFirstName(FIRST_NAME);
         registerDTO.setLastName(LAST_NAME);
         registerDTO.setLogin(LOGIN);
         registerDTO.setPassword(PASSWORD);
 
-        // WHEN
+        // Envoi de la requête POST pour l'enregistrement du nouvel utilisateur
         mockMvc.perform(MockMvcRequestBuilders.post(URL)
                         .content(objectMapper.writeValueAsString(registerDTO))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -120,10 +121,10 @@ public class UserControllerTest {
 
     @Test 
     public void loginUserWithoutRequiredData() throws Exception {
-        // GIVEN
+        // Creation d'un objet LoginRequestDTO vide pour simuler l'absence de données requises
         LoginRequestDTO loginDTO = new LoginRequestDTO();
 
-        // WHEN
+        // Envoi de la requête POST pour la connexion de l'utilisateur avec des données manquantes
         mockMvc.perform(MockMvcRequestBuilders.post("/api/login")
                         .content(objectMapper.writeValueAsString(loginDTO))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -134,13 +135,13 @@ public class UserControllerTest {
 
     @Test
     public void LoginUserWithInvalidCredentials() throws Exception {
-        // GIVEN
+        // Creation d'un objet LoginRequestDTO avec des informations de connexion invalides
         LoginRequestDTO loginDTO = new LoginRequestDTO();
         loginDTO.setLogin("WrongLogin");
         loginDTO.setPassword("WrongPassword");
 
 
-        // WHEN
+        // Envoi de la requête POST pour la connexion de l'utilisateur avec des informations de connexion invalides
         mockMvc.perform(MockMvcRequestBuilders.post("/api/login")
                         .content(objectMapper.writeValueAsString(loginDTO))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -149,10 +150,9 @@ public class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
-  
     @Test
     public void loginUserSuccessful() throws Exception {
-        // GIVEN
+        // Creation d'un utilisateur dans la base de données pour simuler la cconnexion d'un utilisateur existant avec des informations de connexion valides
         User user = new User();
         user.setFirstName(FIRST_NAME);
         user.setLastName(LAST_NAME);
@@ -160,7 +160,7 @@ public class UserControllerTest {
         user.setPassword(PASSWORD);
         userService.register(user);
 
-        //Then
+        // Envoi d'une requête POST pour la connexion de l'utilisateur avec des informations de connexion valides
         LoginRequestDTO loginDTO = new LoginRequestDTO();
         loginDTO.setLogin(LOGIN);
         loginDTO.setPassword(PASSWORD);

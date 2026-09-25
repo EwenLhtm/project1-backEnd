@@ -20,17 +20,21 @@ public class JwtService {
     private String secret;
 
     public String generateToken(UserDetails userDetails) {
+        // Recupération de l'algorithme de signature et de la date actuelle
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         Date now = new Date(System.currentTimeMillis());
 
+        // Décodage de la clé secrète et création de la clé de signature
         byte[] apiKey = Base64.getDecoder().decode(secret);
         Key signingKey = new SecretKeySpec(apiKey, signatureAlgorithm.getJcaName());
 
+        // Création du token JWT avec le sujet, la date d'émission et la signature
         JwtBuilder builder = Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(now)
                 .signWith(signatureAlgorithm, signingKey);
 
+        // Retourne le token JWT sous forme de chaîne de caractères
         return builder.compact();
     }
 }

@@ -35,7 +35,7 @@ public class UserServiceTest {
 
     @Test
     public void test_create_user() {
-        // GIVEN
+        // Crée un nouvel utilisateur avec des informations valides
         User user = new User();
         user.setFirstName(FIRST_NAME);
         user.setLastName(LAST_NAME);
@@ -44,10 +44,10 @@ public class UserServiceTest {
         when(passwordEncoder.encode(PASSWORD)).thenReturn(PASSWORD);
         when(userRepository.findByLogin(any())).thenReturn(Optional.empty());
 
-        // WHEN
+        // Enregistre l'utilisateur en utilisant le service
         userService.register(user);
 
-        // THEN
+        // Vérifie que l'utilisateur a été enregistré correctement en utilisant un ArgumentCaptor
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(userCaptor.capture());
         assertThat(userCaptor.getValue()).isEqualTo(user);
@@ -55,7 +55,7 @@ public class UserServiceTest {
 
     @Test
     public void test_create_already_exist_user_throws_IllegalArgumentException() {
-        // GIVEN
+        // Crée un utilisateur avec un login déjà existant
         User user = new User();
         user.setFirstName(FIRST_NAME);
         user.setLastName(LAST_NAME);
@@ -64,7 +64,7 @@ public class UserServiceTest {
         when(passwordEncoder.encode(PASSWORD)).thenReturn(PASSWORD);
         when(userRepository.findByLogin(any())).thenReturn(Optional.of(user));
 
-        // THEN
+        // Vérifie que la création d'un utilisateur avec un login déjà existant lance une exception IllegalArgumentException
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> userService.register(user));
     }
@@ -72,16 +72,14 @@ public class UserServiceTest {
 
     @Test
     public void test_create_null_user_throws_IllegalArgumentException() {
-        // GIVEN
-
-        // THEN
+        // Vérifie que la création d'un utilisateur null lance une exception IllegalArgumentException
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> userService.register(null));
     }
 
     @Test
     public void test_login_user() {
-        // GIVEN
+        // Crée un utilisateur avec des informations valides
         User user = new User();
         user.setFirstName(FIRST_NAME);
         user.setLastName(LAST_NAME);
@@ -91,17 +89,16 @@ public class UserServiceTest {
         when(userRepository.findByLogin(any())).thenReturn(Optional.of(user));
         when(jwtService.generateToken(any())).thenReturn("jwtToken");
 
-        // WHEN
+        // Vérifie que la connexion de l'utilisateur avec des informations valides retourne un token JWT
         String jwtToken = userService.login(LOGIN, PASSWORD);
 
-        // THEN
+        // Vérifie que le token JWT n'est pas null
         assertThat(jwtToken).isNotNull();
     }
 
     @Test 
     public void test_login_user_with_invalid_credentials_throws_IllegalArgumentException() {
-        // GIVEN
-        // GIVEN
+        // Crée un utilisateur avec des informations valides
         User user = new User();
         user.setFirstName(FIRST_NAME);
         user.setLastName(LAST_NAME);
@@ -111,35 +108,31 @@ public class UserServiceTest {
         when(userRepository.findByLogin(any())).thenReturn(Optional.of(user));
         when(jwtService.generateToken(any())).thenReturn("jwtToken");
 
-        // THEN
+        // Vérifie que la connexion de l'utilisateur avec des informations invalides lance une exception IllegalArgumentException
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> userService.login(LOGIN, "wrongPassword"));
     }
 
     @Test 
     public void test_login_user_dont_exist_throws_IllegalArgumentException() {
-        // GIVEN
+        // Simule qu'aucun utilisateur n'existe avec le login donné
         when(userRepository.findByLogin(any())).thenReturn(Optional.empty());
 
-        // THEN
+        // Vérifie que la connexion d'un utilisateur qui n'existe pas lance une exception IllegalArgumentException
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> userService.login(LOGIN, PASSWORD));
     }
 
     @Test
     public void test_login_user_with_null_login_throws_IllegalArgumentException() {
-        // GIVEN
-
-        // THEN
+        // Vérifie que la connexion d'un utilisateur avec un login null lance une exception IllegalArgumentException
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> userService.login(null, PASSWORD));
     }
 
     @Test
     public void test_login_user_with_null_password_throws_IllegalArgumentException() {
-        // GIVEN
-
-        // THEN
+        // Vérifie que la connexion d'un utilisateur avec un mot de passe null lance une exception IllegalArgumentException
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> userService.login(LOGIN, null));
     }

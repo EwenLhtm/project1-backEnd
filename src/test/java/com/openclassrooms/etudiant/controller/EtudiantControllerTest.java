@@ -63,10 +63,10 @@ public class EtudiantControllerTest {
 
     @Test
     public void createEtudiantWithoutRequiredData() throws Exception {
-        // GIVEN
+        // Création d'un objet EtudiantRequestDTO vide pour simuler une requête sans données requises
         EtudiantRequestDTO etudiantRequestDTO = new EtudiantRequestDTO();
 
-        //WHEN
+        // Envoi d'une requête POST vers l'URL de création d'étudiant avec le corps de la requête vide
         mockMvc.perform(MockMvcRequestBuilders.post(URL)
                         .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_USER")))
                         .content(objectMapper.writeValueAsString(etudiantRequestDTO))
@@ -78,19 +78,20 @@ public class EtudiantControllerTest {
 
     @Test
     public void createEtudiantAlreadyExistEmail() throws Exception {
-        // GIVEN
+        // Création d'un étudiant existant avec l'email spécifié pour simuler un conflit d'email
         Etudiant etudiant = new Etudiant();
         etudiant.setFirstName(FIRST_NAME);
         etudiant.setLastName(LAST_NAME);
         etudiant.setEmail(EMAIL);
         etudiantService.create(etudiant);
 
+        // Création d'un objet EtudiantRequestDTO avec le même email pour simuler une tentative de création d'étudiant avec un email déjà existant
         EtudiantRequestDTO etudiantRequestDTO = new EtudiantRequestDTO();
         etudiantRequestDTO.setFirstName(FIRST_NAME);
         etudiantRequestDTO.setLastName(LAST_NAME);
         etudiantRequestDTO.setEmail(EMAIL);
 
-        // WHEN
+        // Envoi d'une requête POST vers l'URL de création d'étudiant avec le corps de la requête contenant les données de l'étudiant déjà existant
         mockMvc.perform(MockMvcRequestBuilders.post(URL)
                         .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_USER")))
                         .content(objectMapper.writeValueAsString(etudiantRequestDTO))
@@ -102,13 +103,13 @@ public class EtudiantControllerTest {
 
     @Test
     public void createEtudiant() throws Exception {
-        // GIVEN
+        // Création d'un objet EtudiantRequestDTO avec les données nécessaires pour créer un nouvel étudiant
         EtudiantRequestDTO etudiantRequestDTO = new EtudiantRequestDTO();
         etudiantRequestDTO.setFirstName(FIRST_NAME);
         etudiantRequestDTO.setLastName(LAST_NAME);
         etudiantRequestDTO.setEmail(EMAIL);
 
-        // WHEN
+        // Envoi d'une requête POST vers l'URL de création d'étudiant avec le corps de la requête contenant les données du nouvel étudiant
         mockMvc.perform(MockMvcRequestBuilders.post(URL)
                         .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_USER")))
                         .content(objectMapper.writeValueAsString(etudiantRequestDTO))
@@ -120,7 +121,7 @@ public class EtudiantControllerTest {
 
     @Test 
     public void getAllEtudiants() throws Exception {
-        // GIVEN
+        // Création de deux étudiants pour tester la récupération de tous les étudiants
         Etudiant etudiant1 = new Etudiant();
         etudiant1.setFirstName(FIRST_NAME);
         etudiant1.setLastName(LAST_NAME);
@@ -133,7 +134,7 @@ public class EtudiantControllerTest {
         etudiant2.setEmail("jane.smith@example.com");
         etudiantService.create(etudiant2);
 
-        // WHEN
+        // Envoi d'une requête GET vers l'URL de récupération de tous les étudiants
         mockMvc.perform(MockMvcRequestBuilders.get(URL)
                         .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_USER")))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -145,7 +146,7 @@ public class EtudiantControllerTest {
 
     @Test 
     public void getEtudiantInexistantId() throws Exception {
-        // WHEN
+        // Envoi d'une requête GET vers l'URL de récupération d'un étudiant avec un ID inexistant (999L)
         mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", 999L)
                         .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_USER")))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -156,14 +157,14 @@ public class EtudiantControllerTest {
 
     @Test 
     public void getEtudiantById() throws Exception {
-        // GIVEN
+        // Création d'un étudiant pour tester la récupération d'un étudiant par son ID
         Etudiant etudiant = new Etudiant();
         etudiant.setFirstName(FIRST_NAME);
         etudiant.setLastName(LAST_NAME);
         etudiant.setEmail(EMAIL);
         etudiantService.create(etudiant);
 
-        // WHEN
+        // Envoi d'une requête GET vers l'URL de récupération d'un étudiant avec l'ID de l'étudiant créé
         mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", etudiant.getId())
                         .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_USER")))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -177,13 +178,13 @@ public class EtudiantControllerTest {
 
     @Test 
     public void updateEtudiantInexistantId() throws Exception {
-        // GIVEN
+        // Creation d'un objet EtudiantRequestDTO avec les données nécessaires pour mettre à jour un étudiant
         EtudiantRequestDTO etudiantRequestDTO = new EtudiantRequestDTO();
         etudiantRequestDTO.setFirstName(FIRST_NAME);
         etudiantRequestDTO.setLastName(LAST_NAME);
         etudiantRequestDTO.setEmail(EMAIL);
 
-        // WHEN
+        // Envoi d'une requête PUT vers l'URL de mise à jour d'un étudiant avec un ID inexistant (999L)
         mockMvc.perform(MockMvcRequestBuilders.put(URL + "/{id}", 999L)
                         .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_USER")))
                         .content(objectMapper.writeValueAsString(etudiantRequestDTO))
@@ -195,20 +196,22 @@ public class EtudiantControllerTest {
 
     @Test
     public void updateEtudiant() throws Exception {
-        // GIVEN
+        // Creation d'un étudiant pour tester la mise à jour d'un étudiant existant
         Etudiant etudiant = new Etudiant();
         etudiant.setFirstName(FIRST_NAME);
         etudiant.setLastName(LAST_NAME);
         etudiant.setEmail(EMAIL);
         
+        // Sauvegarde de l'étudiant dans la base de données et récupération de l'étudiant créé
         Etudiant createdEtudiant = etudiantRepository.saveAndFlush(etudiant);
 
+        // Creation d'un objet EtudiantRequestDTO avec les nouvelles données pour mettre à jour l'étudiant
         EtudiantRequestDTO etudiantRequestDTO = new EtudiantRequestDTO();
         etudiantRequestDTO.setFirstName("UpdatedFirstName");
         etudiantRequestDTO.setLastName("UpdatedLastName");
         etudiantRequestDTO.setEmail(EMAIL);
 
-        // WHEN
+        // Envoi d'une requête PUT vers l'URL de mise à jour d'un étudiant avec l'ID de l'étudiant créé et le corps de la requête contenant les nouvelles données
        mockMvc.perform(MockMvcRequestBuilders.put(URL + "/{id}", createdEtudiant.getId())
                         .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_USER")))
                         .content(objectMapper.writeValueAsString(etudiantRequestDTO))
@@ -220,7 +223,7 @@ public class EtudiantControllerTest {
 
     @Test 
     public void deleteEtudiantInexistantId() throws Exception {
-        // WHEN
+        // Envoi d'une requête DELETE vers l'URL de suppression d'un étudiant avec un ID inexistant (999L)
         mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", 999L)
                         .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_USER")))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -231,14 +234,14 @@ public class EtudiantControllerTest {
 
     @Test
     public void deleteEtudiant() throws Exception {
-        // GIVEN
+        // Création d'un étudiant pour tester la suppression d'un étudiant existant
         Etudiant etudiant = new Etudiant();
         etudiant.setFirstName(FIRST_NAME);
         etudiant.setLastName(LAST_NAME);
         etudiant.setEmail(EMAIL);
         etudiantService.create(etudiant);
 
-        // WHEN
+        // Envoi d'une requête DELETE vers l'URL de suppression d'un étudiant avec l'ID de l'étudiant créé
         mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", etudiant.getId())
                         .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_USER")))
                         .contentType(MediaType.APPLICATION_JSON)
